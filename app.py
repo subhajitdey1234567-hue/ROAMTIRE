@@ -13,91 +13,72 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS with Enlarged Logo & Dark Theme Hero Banner
+# Custom CSS for modern responsive mobile & desktop UI
 st.markdown("""
 <style>
-    /* Hero Banner Container */
-    .hero-container {
-        background: linear-gradient(135deg, #1e1e2f 0%, #0f172a 100%);
-        border: 1px solid #334155;
-        border-radius: 16px;
-        padding: 28px 32px;
-        margin-bottom: 25px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-    }
-    
-    .hero-title-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-    
-    /* Enlarged Badge Logo Icon */
-    .hero-logo {
-        font-size: 3.5rem;
-        background: linear-gradient(135deg, #ff4b4b 0%, #ff8f00 100%);
-        padding: 12px 20px;
-        border-radius: 18px;
-        display: inline-block;
-        box-shadow: 0 6px 20px rgba(255, 75, 75, 0.4);
-        line-height: 1;
-    }
-
-    /* Main Brand Header */
     .main-header {
-        font-size: 3.2rem !important;
-        font-weight: 800 !important;
-        background: -webkit-linear-gradient(45deg, #ff4b4b, #ff8f00);
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: -webkit-linear-gradient(45deg, #FF4B4B, #FF8F00);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin: 0 !important;
-        line-height: 1.1 !important;
-        letter-spacing: -0.5px;
+        margin-bottom: 0px;
     }
-
-    /* Subtitle Styling */
     .sub-header {
-        font-size: 1.25rem !important;
-        color: #94a3b8 !important;
-        margin-top: 6px !important;
-        margin-bottom: 0px !important;
-        font-weight: 400;
+        font-size: 1.05rem;
+        color: #6c757d;
+        margin-bottom: 20px;
     }
-
-    /* Price Card Styling */
     .price-card {
-        border: 1px solid #334155;
-        border-radius: 14px;
-        padding: 22px;
-        background-color: #1e293b;
-        text-align: center;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07);
+        margin-bottom: 15px;
+        min-height: 290px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
     .tier-title {
         font-weight: 700;
-        font-size: 1.3rem;
-        color: #f8fafc;
+        font-size: 1.15rem;
+        color: #1e293b;
+        text-align: center;
     }
     .tier-price {
-        font-size: 2.1rem;
+        font-size: 1.8rem;
         font-weight: 800;
-        color: #4ade80;
-        margin: 8px 0;
+        color: #10b981;
+        margin: 6px 0 2px 0;
+        text-align: center;
     }
-    .breakdown-text {
-        font-size: 0.92rem;
-        color: #cbd5e1;
-        text-align: left;
+    .per-person-text {
+        color: #64748b;
+        font-size: 0.85rem;
+        text-align: center;
+        margin-bottom: 8px;
+    }
+    .breakdown-box {
+        font-size: 0.88rem;
+        color: #334155;
+        line-height: 1.55;
+        background-color: #f8fafc;
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 6px;
     }
 </style>
 """, unsafe_allow_html=True)
 
 
 # ==========================================
-# PREDICTIVE PRICE ENGINE & ITINERARY DATA
+# PREDICTIVE PRICE ENGINE & ITINERARY DATABASE
 # ==========================================
 
 DESTINATION_DATABASE = {
+    "kashmir": {"type": "valley_mountain", "tier_multiplier": 1.35, "cab_daily": 3200},
     "puri": {"type": "coastal_spiritual", "tier_multiplier": 1.0, "cab_daily": 2200},
     "meghalaya": {"type": "hill_nature", "tier_multiplier": 1.25, "cab_daily": 3500},
     "goa": {"type": "coastal_beach", "tier_multiplier": 1.35, "cab_daily": 2800},
@@ -110,8 +91,8 @@ DESTINATION_DATABASE = {
 
 STAR_RATES_PER_NIGHT = {
     "2_star": {"base": 1400, "label": "2-Star (Budget)", "stay_type": "Guesthouses & Budget Hotels", "transit": "Shared Cabs / Autos"},
-    "3_star": {"base": 3200, "label": "3-Star (Standard)", "stay_type": "3-Star Rated Boutique Hotels", "transit": "Dedicated Private Sedan"},
-    "4_star": {"base": 6500, "label": "4-Star (Premium)", "stay_type": "4-Star Premium Resorts", "transit": "Private SUV & Airport Transfers"}
+    "3_star": {"base": 3200, "label": "3-Star (Standard)", "stay_type": "Rated Boutique Hotels", "transit": "Dedicated Private Sedan"},
+    "4_star": {"base": 6500, "label": "4-Star (Premium)", "stay_type": "Premium Resorts", "transit": "Private SUV & Airport Transfers"}
 }
 
 DAILY_FOOD_ACTIVITY_COST = {
@@ -121,6 +102,23 @@ DAILY_FOOD_ACTIVITY_COST = {
 }
 
 ITINERARY_TEMPLATES = {
+    "kashmir": {
+        "highlights": [
+            ("Morning", "Shikara Ride on Dal Lake & Boulevard Road", 800),
+            ("Afternoon", "Mughal Gardens (Nishat & Shalimar Bagh)", 150),
+            ("Evening", "Lal Chowk Walking Tour & Kashmiri Craft Center", 200)
+        ],
+        "balanced": [
+            ("Morning", "Gulmarg Gondola Phase 1 & Meadow Trail", 1450),
+            ("Afternoon", "Pahalgam Betaab Valley & Aru Valley Excursion", 850),
+            ("Evening", "Local Wazwan Dining Experience", 900)
+        ],
+        "relaxed": [
+            ("Morning", "Doodhpathri (Valley of Milk) Nature Walk", 400),
+            ("Afternoon", "Pari Mahal Historic Sunset Overlook", 100),
+            ("Evening", "Traditional Saffron Kahwa Tea Session", 250)
+        ]
+    },
     "puri": {
         "highlights": [
             ("Morning", "Jagannath Temple Darshan & Anand Bazar", 100),
@@ -175,15 +173,22 @@ ITINERARY_TEMPLATES = {
 }
 
 
-def calculate_price_predictions(dest_key, days, travelers, season_multiplier=1.0):
-    """Predicts pricing breakdown for 2-star, 3-star, and 4-star tiers."""
+def calculate_price_predictions(dest_key, days, travelers, season):
     dest_info = DESTINATION_DATABASE.get(dest_key, DESTINATION_DATABASE["default"])
-    multiplier = dest_info["tier_multiplier"] * season_multiplier
-    cab_daily = dest_info["cab_daily"] * season_multiplier
+    multiplier = dest_info["tier_multiplier"]
+    cab_daily = dest_info["cab_daily"]
+
+    season_multipliers = {
+        "Peak Season (High)": 1.20,
+        "Regular Season": 1.00,
+        "Monsoon / Off-Peak": 0.85
+    }
+    season_factor = season_multipliers.get(season, 1.0)
+    multiplier *= season_factor
 
     rooms_needed = max(1, (travelers + 1) // 2)
     predictions = {}
-    
+
     for star_key, star_data in STAR_RATES_PER_NIGHT.items():
         hotel_nightly = star_data["base"] * multiplier
         total_hotel = hotel_nightly * (days - 1 if days > 1 else 1) * rooms_needed
@@ -216,7 +221,6 @@ def calculate_price_predictions(dest_key, days, travelers, season_multiplier=1.0
 
 
 def generate_itineraries(dest_key, days):
-    """Generates 3 customized itineraries (Express, Balanced, Immersive)."""
     dest_data = ITINERARY_TEMPLATES.get(dest_key, ITINERARY_TEMPLATES["default"])
     
     options = [
@@ -230,7 +234,7 @@ def generate_itineraries(dest_key, days):
         days_plan = []
         for d in range(1, days + 1):
             day_activities = []
-            for slot, (time, name, cost) in enumerate(opt["source"]):
+            for time, name, cost in opt["source"]:
                 adj_cost = cost + ((d - 1) * 20)
                 day_activities.append({
                     "time": time,
@@ -252,47 +256,30 @@ def generate_itineraries(dest_key, days):
 # STREAMLIT USER INTERFACE
 # ==========================================
 
-# Header Hero Section with Enlarged Logo
-st.markdown("""
-<div class="hero-container">
-    <div class="hero-title-wrapper">
-        <div class="hero-logo">🗺️</div>
-        <div>
-            <h1 class="main-header">RoamTier AI</h1>
-            <p class="sub-header">Intelligent Travel Price Prediction & Dynamic Itinerary Planner</p>
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+st.markdown('<p class="main-header">🗺️ RoamTier AI</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-header">Intelligent Travel Price Prediction & Dynamic Itinerary Planner</p>', unsafe_allow_html=True)
 
-# Sidebar Inputs
 with st.sidebar:
     st.header("⚙️ Trip Parameters")
     
-    dest_input = st.text_input("Destination", value="Puri", placeholder="e.g., Puri, Meghalaya, Goa").strip()
-    duration_input = st.number_input("Duration (Days)", min_value=1, max_value=14, value=3)
-    travelers_input = st.number_input("Travelers Count", min_value=1, max_value=20, value=2)
+    dest_input = st.text_input("Destination", value="Kashmir", placeholder="e.g., Kashmir, Puri, Meghalaya, Goa").strip()
+    duration_input = st.number_input("Duration (Days)", min_value=1, max_value=14, value=6)
+    travelers_input = st.number_input("Travelers Count", min_value=1, max_value=20, value=3)
+    travel_season = st.selectbox("Travel Season", ["Peak Season (High)", "Regular Season", "Monsoon / Off-Peak"])
     
-    travel_season = st.selectbox("Travel Season", ["Regular Season", "Peak Season (High)", "Monsoon / Off-Peak"])
-    season_mult = 1.25 if "Peak" in travel_season else (0.85 if "Off-Peak" in travel_season else 1.0)
-
     calc_btn = st.button("🚀 Estimate Prices & Generate Plans", type="primary", use_container_width=True)
 
-# Destination Key Lookup Processing
-dest_key = dest_input.lower()
-if dest_key not in DESTINATION_DATABASE:
-    for key in DESTINATION_DATABASE.keys():
-        if key in dest_key:
-            dest_key = key
-            break
-    else:
-        dest_key = "default"
+clean_key = dest_input.lower()
+matched_key = "default"
+for candidate in DESTINATION_DATABASE:
+    if candidate in clean_key:
+        matched_key = candidate
+        break
 
-# Calculation Trigger & Session State Setup
 if calc_btn or "predictions" not in st.session_state:
-    st.session_state["predictions"] = calculate_price_predictions(dest_key, duration_input, travelers_input, season_mult)
-    st.session_state["itineraries"] = generate_itineraries(dest_key, duration_input)
-    st.session_state["current_dest"] = dest_input.title() if dest_input else "Puri"
+    st.session_state["predictions"] = calculate_price_predictions(matched_key, duration_input, travelers_input, travel_season)
+    st.session_state["itineraries"] = generate_itineraries(matched_key, duration_input)
+    st.session_state["current_dest"] = dest_input.title()
     st.session_state["days"] = duration_input
     st.session_state["travelers"] = travelers_input
 
@@ -303,7 +290,7 @@ days = st.session_state["days"]
 travelers = st.session_state["travelers"]
 
 # ==========================================
-# DISPLAY SECTION 1: PRICE PREDICTIONS
+# SECTION 1: PRICE PREDICTIONS
 # ==========================================
 st.subheader(f"📊 Price Predictions for {curr_dest} ({days} Days, {travelers} Traveler{'s' if travelers > 1 else ''})")
 
@@ -315,13 +302,14 @@ for star_key, col, badge in tiers_data:
     with col:
         st.markdown(f"""
         <div class="price-card">
-            <div class="tier-title">{badge} {data['label']}</div>
-            <div class="tier-price">₹{data['total_cost']:,}</div>
-            <p style="margin-top:-10px; color:#94a3b8; font-size:0.85rem;">₹{data['per_person']:,} per person</p>
-            <hr style="border-color: #334155; margin: 10px 0;">
-            <div class="breakdown-text">
+            <div>
+                <div class="tier-title">{badge} {data['label']}</div>
+                <div class="tier-price">₹{data['total_cost']:,}</div>
+                <div class="per-person-text">₹{data['per_person']:,} / person</div>
+            </div>
+            <div class="breakdown-box">
                 🏨 <b>Stay:</b> {data['stay_type']}<br>
-                🚗 <b>Transit:</b> {data['transit']}<br><br>
+                🚗 <b>Transit:</b> {data['transit']}<br>
                 💰 <b>Accommodation:</b> ₹{data['breakdown']['Accommodation']:,}<br>
                 🚕 <b>Transport:</b> ₹{data['breakdown']['Transport']:,}<br>
                 🎟️ <b>Food & Passes:</b> ₹{data['breakdown']['Food & Sightseeing']:,}
@@ -331,7 +319,11 @@ for star_key, col, badge in tiers_data:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Plotly Component Breakdown Chart
+# ==========================================
+# SECTION 2: CLEAN STACKED BAR CHART (FIXED GLITCH)
+# ==========================================
+st.markdown("#### 📊 Price Component Comparison across Tiers (INR)")
+
 chart_data = []
 for k, v in preds.items():
     chart_data.append({
@@ -348,18 +340,29 @@ fig = go.Figure(data=[
     go.Bar(name='Transport', x=df_chart['Tier'], y=df_chart['Transport'], marker_color='#facc15'),
     go.Bar(name='Food & Sightseeing', x=df_chart['Tier'], y=df_chart['Food & Sightseeing'], marker_color='#4ade80')
 ])
+
 fig.update_layout(
     barmode='stack',
-    title="Price Component Comparison across Tiers (INR)",
-    height=360,
-    margin=dict(l=20, r=20, t=40, b=20),
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    height=400,
+    margin=dict(l=10, r=10, t=10, b=50),
+    legend=dict(
+        orientation="h",
+        yanchor="top",
+        y=-0.18,
+        xanchor="center",
+        x=0.5,
+        font=dict(size=12)
+    ),
+    xaxis=dict(tickfont=dict(size=12)),
+    yaxis=dict(title="Amount (₹)", tickformat=","),
+    plot_bgcolor="rgba(0,0,0,0)",
+    paper_bgcolor="rgba(0,0,0,0)"
 )
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
 # ==========================================
-# DISPLAY SECTION 2: THREE ITINERARY CHOICES
+# SECTION 3: ITINERARY CHOICES
 # ==========================================
 st.markdown("---")
 st.subheader("🗓️ Select Your Itinerary Plan Choice")
@@ -370,19 +373,15 @@ tab1, tab2, tab3 = st.tabs([
     itineraries[2]["title"]
 ])
 
-tabs = [tab1, tab2, tab3]
-
-for idx, tab in enumerate(tabs):
+for idx, tab in enumerate([tab1, tab2, tab3]):
     plan = itineraries[idx]
     with tab:
         st.info(f"**Vibe:** {plan['vibe']}")
-        
         for day_item in plan["schedule"]:
             with st.expander(f"📌 Day {day_item['day']}: Tour Schedule", expanded=True):
                 for act in day_item["activities"]:
                     st.write(f"- **{act['time']}**: {act['activity']} *(Est. Fee: ₹{act['cost']}/person)*")
 
-# JSON Export Option
 st.markdown("---")
 report_data = {
     "destination": curr_dest,
