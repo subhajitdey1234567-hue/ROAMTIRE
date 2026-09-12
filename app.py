@@ -7,66 +7,45 @@ import json
 # PAGE CONFIGURATION & STYLING
 # ==========================================
 st.set_page_config(
-    page_title="RoamTier AI | Smart Travel Price Predictor",
+    page_title="RoamTier | Smart Travel Price Predictor",
     page_icon="🗺️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for modern Google-like branding & responsive UI
+# Custom CSS for modern responsive mobile & desktop UI
 st.markdown("""
 <style>
-    /* Google-Scale Brand Logo Header */
     .brand-container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px 0 20px 0;
-        border-bottom: 1px solid #f1f5f9;
-        margin-bottom: 25px;
-    }
-    .brand-logo-wrapper {
         display: flex;
         align-items: center;
         gap: 12px;
+        margin-top: 5px;
+        margin-bottom: 2px;
     }
-    .brand-icon {
-        font-size: 3.2rem;
+    .brand-logo-icon {
+        font-size: 3.6rem;
         line-height: 1;
-        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
+        display: inline-block;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
     }
-    .brand-title {
+    .brand-logo-text {
         font-size: 3.4rem;
-        font-weight: 900;
-        letter-spacing: -1.5px;
-        line-height: 1.05;
-        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 35%, #f97316 70%, #ef4444 100%);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        line-height: 1;
+        background: -webkit-linear-gradient(45deg, #FF4B4B, #FF8F00);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        display: inline-block;
     }
-    .brand-badge {
-        background: #eff6ff;
-        color: #2563eb;
-        border: 1px solid #bfdbfe;
-        font-size: 0.85rem;
-        font-weight: 700;
-        padding: 3px 10px;
-        border-radius: 9999px;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        align-self: flex-start;
-        margin-top: 8px;
-    }
-    .brand-tagline {
-        font-size: 1.15rem;
+    .sub-header {
+        font-size: 1.05rem;
         color: #64748b;
-        font-weight: 500;
-        margin: 8px 0 0 0;
+        margin-top: 4px;
+        margin-bottom: 22px;
+        font-weight: 400;
     }
-
-    /* Price Cards */
     .price-card {
         border: 1px solid #e2e8f0;
         border-radius: 14px;
@@ -74,7 +53,7 @@ st.markdown("""
         background-color: #ffffff;
         box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06);
         margin-bottom: 15px;
-        min-height: 290px;
+        min-height: 300px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -94,18 +73,19 @@ st.markdown("""
     }
     .per-person-text {
         color: #64748b;
-        font-size: 0.88rem;
+        font-size: 0.85rem;
         text-align: center;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
     .breakdown-box {
         font-size: 0.88rem;
         color: #334155;
         line-height: 1.6;
         background-color: #f8fafc;
-        border-radius: 8px;
+        border-radius: 10px;
         padding: 12px;
         margin-top: 6px;
+        border: 1px solid #f1f5f9;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -294,19 +274,15 @@ def generate_itineraries(dest_key, days):
 # STREAMLIT USER INTERFACE
 # ==========================================
 
-# Bold, Google-Scale Logo & Header
+# Prominent brand header
 st.markdown("""
 <div class="brand-container">
-    <div class="brand-logo-wrapper">
-        <span class="brand-icon">🗺️</span>
-        <h1 class="brand-title">RoamTier<span style="color:#ef4444;">.</span></h1>
-        <span class="brand-badge">AI Core</span>
-    </div>
-    <p class="brand-tagline">Intelligent Multi-Tier Travel Cost Estimation & Dynamic Itinerary Engine</p>
+    <span class="brand-logo-icon">🗺️</span>
+    <span class="brand-logo-text">RoamTier</span>
 </div>
 """, unsafe_allow_html=True)
+st.markdown('<p class="sub-header">Intelligent Travel Price Prediction & Dynamic Itinerary Planner</p>', unsafe_allow_html=True)
 
-# Sidebar Parameters
 with st.sidebar:
     st.header("⚙️ Trip Parameters")
     
@@ -317,7 +293,6 @@ with st.sidebar:
     
     calc_btn = st.button("🚀 Estimate Prices & Generate Plans", type="primary", use_container_width=True)
 
-# Normalize key lookup
 clean_key = dest_input.lower()
 matched_key = "default"
 for candidate in DESTINATION_DATABASE:
@@ -431,7 +406,6 @@ for idx, tab in enumerate([tab1, tab2, tab3]):
                 for act in day_item["activities"]:
                     st.write(f"- **{act['time']}**: {act['activity']} *(Est. Fee: ₹{act['cost']}/person)*")
 
-# JSON Export Feature
 st.markdown("---")
 report_data = {
     "destination": curr_dest,
